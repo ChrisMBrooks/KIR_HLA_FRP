@@ -8,4 +8,4 @@ source activate snakemake_env
 
 cd $PBS_O_WORKDIR
 
-snakemake -j 31 --use-conda --conda-frontend conda
+snakemake -j 31 --use-conda --conda-frontend conda --rerun-incomplete
