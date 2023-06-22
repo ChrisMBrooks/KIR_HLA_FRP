@@ -9,10 +9,12 @@ rule run_rf_gs_r1_wo_cv_parallel:
         start_index = "{start_index}",
         step = "{step}",
         out_dir = "Output/{project}/RandomForest/{date_str}/Test{test_id}/ParallelisedData",
-        num_jobs = 8
+        num_jobs = 1
     output:
         result = "Output/{project}/RandomForest/{date_str}/Test{test_id}/ParallelisedData/rf_parallel_gs_results_r1_wo_cv.{start_index}.{step}.{test_id}.{date_str}.csv"
     threads: 1
+    resources:
+        mem_mb=1000
     conda: "../../Envs/kir_hla_ml_env.yml"
     shell: 
         """

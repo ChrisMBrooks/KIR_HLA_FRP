@@ -19,6 +19,8 @@ rule run_rf_perm_test:
     log:         
         file = "Output/log/rf_perm_test.{project}.{test_id}.{date_str}.log.txt"
     threads: 1
+    resources:
+        mem_mb=1000
     conda: "../../Envs/kir_hla_ml_env.yml"
     shell: 
         """

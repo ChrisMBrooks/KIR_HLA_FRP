@@ -13,6 +13,8 @@ rule gen_en_gs_line_plots:
     log:         
         file = "Output/log/gen_en_gs_line_plots.{project}.{test_id}.{date_str}.log.txt"
     threads: 1
+    resources:
+        mem_mb=1000
     conda: "../../Envs/kir_hla_ml_env.yml"
     shell: 
         """

@@ -21,6 +21,8 @@ rule gen_rf_gs_results_r1_line_plot:
     log:
         file = "Output/log/rf_get_gs_line_plots_r1.{project}.{test_id}.{date_str}.log.txt"
     threads: 1
+    resources:
+        mem_mb=1000
     conda: "../../Envs/kir_hla_ml_env.yml"
     shell: 
         """

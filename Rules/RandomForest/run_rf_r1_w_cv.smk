@@ -15,6 +15,8 @@ rule run_rf_r1_w_cv:
     log:
         file = "Output/log/run_rf_r1_w_cv.{project}.{test_id}.{date_str}.log.txt"
     threads: 1
+    resources:
+        mem_mb=1000
     conda: "../../Envs/kir_hla_ml_env.yml"
     shell: 
         """

@@ -14,6 +14,8 @@ rule run_en_gs_wo_cv:
         file = "Output/log/run_en_gs.{project}.{test_id}.{date_str}.log.txt"
     conda: "../../Envs/kir_hla_ml_env.yml"
     threads: 16
+    resources:
+        mem_mb=8000
     shell: 
         """
             python {input.script} \

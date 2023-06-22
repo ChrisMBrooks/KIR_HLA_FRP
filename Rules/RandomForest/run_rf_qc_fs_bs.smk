@@ -23,6 +23,8 @@ rule run_rf_qc_fs_bs:
         file = "Output/log/run_rf_qc_fs_bs.{project}.{test_id}.{date_str}.log.txt",
     conda: "../../Envs/kir_hla_ml_env.yml"
     threads: 16
+    resources:
+        mem_mb=3000
     shell: 
         """
             python {input.script} \
