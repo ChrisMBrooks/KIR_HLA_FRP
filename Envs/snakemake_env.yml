@@ -1,0 +1,9 @@
+name: snakemake_env
+channels:
+  - defaults
+  - bioconda
+  - conda-forge
+dependencies:
+  - python=3.11.4
+  - snakemake=7.25.0
+  

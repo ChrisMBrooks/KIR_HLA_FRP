@@ -1,0 +1,21 @@
+name: kir_hla_ml_env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - matplotlib=3.7.1
+  - mysql-connector-python=8.0.31
+  - numpy=1.25.0
+  - openpyxl=3.1.2
+  - pandas=1.5.3
+  - pyarrow=11.0.0
+  - python=3.11.4
+  - requests=2.31.0
+  - scikit-learn
+  - scipy=1.10.1
+  - seaborn=0.12.2
+  - sqlalchemy=2.0.16
+  - statsmodels=0.14.0
+
+

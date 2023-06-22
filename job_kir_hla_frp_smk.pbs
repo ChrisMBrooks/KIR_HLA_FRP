@@ -1,0 +1,11 @@
+#PBS -l select=1:ncpus=32:mem=32gb
+#PBS -l walltime=72:00:00
+#PBS -N kir_hla_smk
+#PBS -j oe
+
+module load anaconda3/personal
+source activate snakemake_env
+
+cd $PBS_O_WORKDIR
+
+snakemake -j 31 --use-conda --conda-frontend conda

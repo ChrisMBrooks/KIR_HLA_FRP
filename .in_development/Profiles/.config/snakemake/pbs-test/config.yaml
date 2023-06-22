@@ -1,0 +1,10 @@
+cluster: "pbs-submit.py"
+#cluster-status: "pbs-status.py"
+#jobscript: "pbs-jobscript.sh"
+jobs: 5
+immediate-submit: False
+verbose: true
+notemp: true
+#restart-times: 3
+use-conda: True
+conda-frontend: "conda"

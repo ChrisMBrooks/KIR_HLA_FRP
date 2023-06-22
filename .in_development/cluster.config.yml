@@ -1,0 +1,9 @@
+# snakemake --use-conda -npr -j 20 --cluster-config cluster.yaml --cluster "qsub -lwalltime={cluster.time} -lselect={cluster.nodes}:ncpus={cluster.cpus}:mem={cluster.mem} -N {cluster.name} -o {cluster.logs} -e {cluster.logs}"
+
+__default__:
+  time: "00:30:00"
+  nodes: 1
+  cpus: 8
+  mem: "10gb"
+  #name: "{rule}.{wildcards}"
+  name: "{rule}"
