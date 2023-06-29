@@ -5,7 +5,7 @@ rule run_en_gs:
     params:
         date_str = "{date_str}",
         test_id = "{test_id}",
-        out_dir = "Output/{project}/ElasticNet/{date_str}/Test{test_id}"
+        out_dir = "Output/{project}/ElasticNet/{date_str}/Test{test_id}",
         num_jobs = 32
     output:
         feature_coefs = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/en_feature_coefs.{test_id}.{date_str}.csv",

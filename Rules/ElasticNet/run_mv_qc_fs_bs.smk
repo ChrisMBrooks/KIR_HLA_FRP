@@ -6,7 +6,7 @@ rule run_mv_qc_fs_bs:
     params:
         date_str = "{date_str}",
         test_id = "{test_id}",
-        out_dir = "Output/{project}/ElasticNet/{date_str}/Test{test_id}"
+        out_dir = "Output/{project}/ElasticNet/{date_str}/Test{test_id}",
         num_jobs = 32
     output:
         results = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/mv_qc_fs_bs_candidate_features.{test_id}.{date_str}.csv", 
