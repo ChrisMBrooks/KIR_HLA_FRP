@@ -12,12 +12,12 @@ rule run_rf_gs_r2_parallel:
         start_index = "{start_index}",
         step = "{step}",
         out_dir = "Output/{project}/RandomForest/{date_str}/Test{test_id}/ParallelisedData",
-        num_jobs = 1
+        num_jobs = 24
     output:
         result = "Output/{project}/RandomForest/{date_str}/Test{test_id}/ParallelisedData/rf_parallel_gs_results_r2_w_cv.{start_index}.{step}.{test_id}.{date_str}.csv"
-    threads: 1
+    threads: 24
     resources:
-        mem_mb=1000
+        mem_mb=6000
     conda: "../../Envs/kir_hla_ml_env.yml"
     shell: 
         """

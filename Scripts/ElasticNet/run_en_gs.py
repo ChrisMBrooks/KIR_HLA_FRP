@@ -58,6 +58,14 @@ def parse_arguments():
         required=True,
         type=str,
     )
+
+    required.add_argument(
+        "-j",
+        "--NumJobs",
+        help="Number of jobs to run in paralle.",
+        required=True,
+        type=int,
+    )
     
     return vars(parser.parse_args())
 
@@ -67,6 +75,7 @@ def main():
     output_dir = args["OutputDir"]
     test_plan_filename = args["TestPlan"]
     date_str = args["DateStr"]
+    n_jobs = args["NumJobs"]
 
     start_time = time.time()
     run_id = str(uuid.uuid4().hex)
@@ -83,7 +92,6 @@ def main():
     dependent_var = 'f_kir_score'
     scoring = 'neg_mean_absolute_error'
 
-    n_jobs = 16 - 1
     n_splits = 5
     n_repeats = 4
     random_state_1 = 42

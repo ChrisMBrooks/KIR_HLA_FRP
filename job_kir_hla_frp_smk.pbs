@@ -1,4 +1,4 @@
-#PBS -l select=1:ncpus=32:mem=32gb
+#PBS -l select=1:ncpus=127:mem=256gb
 #PBS -l walltime=72:00:00
 #PBS -N kir_hla_smk
 #PBS -j oe
@@ -8,4 +8,5 @@ source activate snakemake_env
 
 cd $PBS_O_WORKDIR
 
-snakemake -j 31 --use-conda --conda-frontend conda --rerun-incomplete --resources mem_mb=32000
+snakemake --unlock
+snakemake -j 64 --use-conda --conda-frontend conda --rerun-incomplete --resources mem_mb=256000
