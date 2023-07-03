@@ -8,8 +8,8 @@ rule gen_en_gs_line_plots:
         test_id = "{test_id}",
         out_dir = "Output/{project}/ElasticNet/{date_str}/Test{test_id}"
     output:
-        alpha_plot = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/rf_gs_results_line_plot.alpha.{test_id}.{date_str}.png",
-        l1_plot = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/rf_gs_results_line_plot.l1_ratio.{test_id}.{date_str}.png"
+        alpha_plot = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/en_gs_results_line_plot.alpha.{test_id}.{date_str}.png",
+        l1_plot = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/en_gs_results_line_plot.l1_ratio.{test_id}.{date_str}.png"
     log:         
         file = "Output/log/gen_en_gs_line_plots.{project}.{test_id}.{date_str}.log.txt"
     threads: 1

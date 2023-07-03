@@ -78,7 +78,7 @@ def generate_en_gs_line_plots(test_id:list, date_str:str,
             
         fig.suptitle('EN GS Results - Test: {0} - {1}'.format(test_id, key))
 
-        output_filename = 'rf_gs_results_line_plot.{0}.{1}.{2}.png'.format(key, test_id, date_str)
+        output_filename = 'en_gs_results_line_plot.{0}.{1}.{2}.png'.format(key, test_id, date_str)
         output_filename = os.path.join(output_dir, output_filename)
 
         plt.savefig(output_filename)
