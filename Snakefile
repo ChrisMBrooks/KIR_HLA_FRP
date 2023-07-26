@@ -25,6 +25,9 @@ FS_BS_INCLUSION_THRESHOLD = config["fs_bs_inclusion_threshold"]
 RF_H_PARAMS_R1 = config["rf_selected_h_params_r1"]
 RF_H_PARAMS_R2 = config["rf_selected_h_params_r2"]
 
+PERF_PERM_TEST_IT_COUNT = config["perf_perm_iter_count"]
+PERF_PERM_TEST_IT_STEP = config["perf_perm_iter_step"]
+
 rule all_complete:
     input:
         rf_complete = "Output/{project}/RandomForest/{date_str}/rf_complete.{date_str}.txt".format(
@@ -43,25 +46,31 @@ rule rf_complete:
             "Output/{project}/RandomForest/{date_str}/Test{test_id}/rf_feature_importance_perm_values.{test_id}.{date_str}.csv",
             project=PROJECT,
             test_id=TEST_IDS,
-            date_str=DATE_STR,
+            date_str=DATE_STR
         ),
         validation_results = expand(
             "Output/{project}/RandomForest/{date_str}/Test{test_id}/rf_final_score.{test_id}.{date_str}.csv",
             project=PROJECT,
             test_id=TEST_IDS,
-            date_str=DATE_STR,
+            date_str=DATE_STR
         ),
         plot_r1 = expand(
             "Output/{project}/RandomForest/{date_str}/Test{test_id}/rf_gs_results_r1_line_plot.min_samples_split.{test_id}.{date_str}.png",
             project=PROJECT,
             test_id=TEST_IDS,
-            date_str=DATE_STR,
+            date_str=DATE_STR
         ),
         plot_r2 = expand(
             "Output/{project}/RandomForest/{date_str}/Test{test_id}/rf_gs_results_r2_line_plot.min_samples_split.{test_id}.{date_str}.png",
             project=PROJECT,
             test_id=TEST_IDS,
-            date_str=DATE_STR,
+            date_str=DATE_STR
+        ),
+        perf_hist = expand(
+            "Output/{project}/RandomForest/{date_str}/Test{test_id}/rf_model_performance_perm_hist.{test_id}.{date_str}.png",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
         )
     output:
         file = "Output/{project}/RandomForest/{date_str}/rf_complete.{date_str}.txt"
@@ -81,6 +90,7 @@ rule en_complete:
             date_str=DATE_STR,
             test_id=TEST_IDS
         ),
+
         validation_results = expand(
             "Output/{project}/ElasticNet/{date_str}/Test{test_id}/mv_final_score.{test_id}.{date_str}.csv",
             project=PROJECT,
@@ -88,16 +98,23 @@ rule en_complete:
             test_id=TEST_IDS
         ),
 
-        alpha_plot = expand("Output/{project}/ElasticNet/{date_str}/Test{test_id}/rf_gs_results_line_plot.{h_param}.{test_id}.{date_str}.png",
+        alpha_plot = expand("Output/{project}/ElasticNet/{date_str}/Test{test_id}/en_gs_results_line_plot.{h_param}.{test_id}.{date_str}.png",
             project=PROJECT,
             h_param="alpha",
             test_id=TEST_IDS,
             date_str=DATE_STR
         ),
 
-        l1_plot = expand("Output/{project}/ElasticNet/{date_str}/Test{test_id}/rf_gs_results_line_plot.{h_param}.{test_id}.{date_str}.png",
+        l1_plot = expand("Output/{project}/ElasticNet/{date_str}/Test{test_id}/en_gs_results_line_plot.{h_param}.{test_id}.{date_str}.png",
             project=PROJECT,
             h_param="l1_ratio",
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        perf_hist = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/mv_model_performance_perm_hist.{test_id}.{date_str}.png",
+            project=PROJECT,
             test_id=TEST_IDS,
             date_str=DATE_STR
         )
@@ -110,7 +127,7 @@ rule en_complete:
         """
             echo en_complete! > Output/{params.project}/ElasticNet/{params.date_str}/en_complete.{params.date_str}.txt
         """
-
+#Random Forest Rules
 include: "Rules/RandomForest/get_rf_h_params_combinations.smk"
 include: "Rules/RandomForest/run_rf_gs_r1_parallel.smk"
 include: "Rules/RandomForest/run_rf_gs_r2_parallel.smk"
@@ -123,6 +140,10 @@ include: "Rules/RandomForest/run_rf_qc_fs_bs.smk"
 include: "Rules/RandomForest/run_rf_validation.smk"
 include: "Rules/RandomForest/run_rf_perm_test.smk"
 
+include: "Rules/RandomForest/run_rf_perf_perm_test.smk"
+include: "Rules/RandomForest/gen_rf_perf_test_hist.smk"
+
+#ElasticNet Rules
 include: "Rules/ElasticNet/gen_en_gs_line_plots.smk"
 include: "Rules/ElasticNet/get_en_h_params_combinations.smk"
 include: "Rules/ElasticNet/run_en_gs.smk"
@@ -131,5 +152,6 @@ include: "Rules/ElasticNet/run_mv_perm_test.smk"
 include: "Rules/ElasticNet/run_mv_qc_fs_bs.smk"
 include: "Rules/ElasticNet/run_mv_validation.smk"
 
-
+include: "Rules/ElasticNet/run_mv_perf_perm_test.smk"
+include: "Rules/ElasticNet/gen_mv_perf_test_hist.smk"
 
