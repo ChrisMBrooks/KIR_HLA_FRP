@@ -1,17 +1,17 @@
-rule run_mv_validation:
+rule run_mv_validation_opt:
     input:
         script = "Scripts/Multivariate/mv_validation.py",
         test_plan = EN_TEST_PLAN,
-        features = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/mv_qc_fs_bs_candidate_features.{test_id}.{date_str}.csv"
+        features = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Optimised/optimised_model_candidates.{test_id}.{date_str}.csv"
     params:
         date_str = "{date_str}",
         test_id = "{test_id}",
         trn_test = False,
-        out_dir = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Validation"
+        out_dir = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Optimised"
     output:
-        results = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Validation/mv_final_score.{test_id}.{date_str}.csv"
+        results = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Optimised/mv_final_score.optimised.{test_id}.{date_str}.csv"
     log:
-        file =  "Output/log/mv_validation.{project}.{test_id}.{date_str}.log.txt"
+        file =  "Output/log/mv_validation.optimised.{project}.{test_id}.{date_str}.log.txt"
     threads: 1
     resources:
         mem_mb=1000

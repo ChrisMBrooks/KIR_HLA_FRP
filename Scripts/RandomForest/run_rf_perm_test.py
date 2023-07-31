@@ -90,6 +90,63 @@ def parse_arguments():
 
     return vars(parser.parse_args()) 
 
+def load_phenos_subset(source_filename:str, fs_bs_filter):
+
+    if 'seq_selection_candidates' in source_filename:
+        phenos_subset = pd.read_csv(source_filename, index_col=0)
+        indeces = phenos_subset.values[:,1:3].sum(axis=1)
+        indeces = np.where(indeces >= fs_bs_filter)
+        phenos_subset = list(phenos_subset.iloc[indeces]['label'].values)
+    else:
+        phenos_subset = pd.read_csv(source_filename, index_col=0)
+        phenos_subset = list(phenos_subset['optimised_rep'].values)
+        
+    return phenos_subset
+
+def format_output_filename(source_filename, sigma_cut_off, test_id, date_str, output_dir):
+    optimised = ""
+    if 'seq_selection_candidates' not in source_filename:
+        optimised = "optimised."
+        
+    results_filename = ""
+    plot_filename = ""
+    if sigma_cut_off == 0.0:
+        results_filename = os.path.join(
+            output_dir, 
+            'rf_feature_importance_perm_values.{optimised}{test_id}.{date_str}.csv'.format(
+                optimised=optimised,
+                test_id=test_id, 
+                date_str=date_str
+            )
+        )
+        plot_filename = os.path.join(
+            output_dir,
+            "rf_feature_importance_box_plot.{optimised}{test_id}.{date_str}.png".format(
+                optimised=optimised,
+                test_id=test_id, 
+                date_str=date_str
+            )
+        )
+    elif sigma_cut_off == 2:
+        results_filename = os.path.join(
+            output_dir,
+            'rf_feature_importance_perm_values_2sig.{optimised}{test_id}.{date_str}.csv'.format(
+                optimised=optimised,
+                test_id=test_id, 
+                date_str=date_str
+            )
+        )
+        plot_filename = os.path.join(
+            output_dir,
+            "rf_feature_importance_box_plot_2sig.{optimised}{test_id}.{date_str}.png".format(
+                optimised=optimised,
+                test_id=test_id, 
+                date_str=date_str
+            )
+        )
+
+    return results_filename, plot_filename
+
 def preprocess_for_validation(
         phenos_t:pd.DataFrame, scores_t:pd.DataFrame, 
         phenos_v:pd.DataFrame, scores_v:pd.DataFrame,
@@ -148,45 +205,15 @@ def main():
     h_params['max_samples'] = float(h_params_df['max_samples'].values[0])
     h_params['bootstrap'] = True
     h_params['min_samples_split'] = int(h_params_df['min_samples_split'].values[0])
-    
-    results_filename = ""
-    plot_filename = ""
-    if sigma_cut_off == 0.0:
-        results_filename = os.path.join(
-            output_dir, 
-            'rf_feature_importance_perm_values.{test_id}.{date_str}.csv'.format(
-                test_id=test_id, 
-                date_str=date_str
-            )
-        )
-        plot_filename = os.path.join(
-            output_dir,
-            "rf_feature_importance_box_plot.{test_id}.{date_str}.png".format(
-                test_id=test_id, 
-                date_str=date_str
-            )
-        )
-    elif sigma_cut_off == 2:
-        results_filename = os.path.join(
-            output_dir,
-            'rf_feature_importance_perm_values_2sig.{test_id}.{date_str}.csv'.format(
-                test_id=test_id, 
-                date_str=date_str
-            )
-        )
-        plot_filename = os.path.join(
-            output_dir,
-            "rf_feature_importance_box_plot_2sig.{test_id}.{date_str}.png".format(
-                test_id=test_id, 
-                date_str=date_str
-            )
-        )
+
+    results_filename, plot_filename = format_output_filename(
+        source_filename, sigma_cut_off, test_id, date_str, output_dir)
 
     #Retrieve Data
-    phenos_subset = pd.read_csv(source_filename, index_col=0)
-    indeces = phenos_subset.values[:,1:3].sum(axis=1)
-    indeces = np.where(indeces >= fs_bs_filter)
-    phenos_subset = list(phenos_subset.iloc[indeces]['label'].values)
+    phenos_subset = load_phenos_subset(
+        source_filename=source_filename, 
+        fs_bs_filter=fs_bs_filter
+    )
 
     scores_t = data_sci_mgr.data_mgr.features(fill_na=False, fill_na_value=None, partition='training')
     phenos_t = data_sci_mgr.data_mgr.outcomes(fill_na=False, fill_na_value=None, partition='training')
@@ -254,8 +281,10 @@ def main():
     filter_condition = mean -1*sigma_cut_off*std
     indeces = np.where(filter_condition > 0)[0]
     columns = importances_df.columns.values
-    columns = [columns[i] for i in indeces]
-    importances_df = importances_df[columns]
+
+    if indeces.shape[0] > 0:
+        columns = [columns[i] for i in indeces]
+        importances_df = importances_df[columns]
 
     ax = importances_df.plot.box(vert=False, whis=1.5)
     ax.set_title("Permutation Importances ({})".format(perm_type))

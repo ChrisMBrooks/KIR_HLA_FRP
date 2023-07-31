@@ -1,4 +1,4 @@
-rule run_mv_validation:
+rule run_mv_train_test:
     input:
         script = "Scripts/Multivariate/mv_validation.py",
         test_plan = EN_TEST_PLAN,
@@ -6,12 +6,12 @@ rule run_mv_validation:
     params:
         date_str = "{date_str}",
         test_id = "{test_id}",
-        trn_test = False,
-        out_dir = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Validation"
+        trn_test = True,
+        out_dir = "Output/{project}/ElasticNet/{date_str}/Test{test_id}"
     output:
-        results = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Validation/mv_final_score.{test_id}.{date_str}.csv"
+        results = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/mv_train_test_score.{test_id}.{date_str}.csv"
     log:
-        file =  "Output/log/mv_validation.{project}.{test_id}.{date_str}.log.txt"
+        file =  "Output/log/mv_train_test.{project}.{test_id}.{date_str}.log.txt"
     threads: 1
     resources:
         mem_mb=1000

@@ -1,22 +1,19 @@
-rule run_rf_validation_r2:
+rule run_rf_validation_r2_opt:
     input:
         script = "Scripts/RandomForest/run_rf_validation.py",
         test_plan = RF_TEST_PLAN,
         h_params = RF_H_PARAMS_R2,
-        fs_bs_results = "Output/{{project}}/RandomForest/{{date_str}}/Test{{test_id}}/rf_seq_selection_candidates.fs_bs.{thresh}.{{test_id}}.{{date_str}}.csv".format(
-            thresh=FS_BS_INCLUSION_THRESHOLD
-        ), 
-        gs_data = "Output/{project}/RandomForest/{date_str}/Test{test_id}/rf_gs_results_r2_w_cv.{test_id}.{date_str}.csv"
+        features = "Output/{project}/RandomForest/{date_str}/Test{test_id}/Optimised/optimised_model_candidates.{test_id}.{date_str}.csv",
     params:
         date_str = "{date_str}",
         test_id = "{test_id}",
         trn_test = False,
-        out_dir = "Output/{project}/RandomForest/{date_str}/Test{test_id}/Validation",
+        out_dir = "Output/{project}/RandomForest/{date_str}/Test{test_id}/Optimised",
         n_jobs = 1
     output:
-        results = "Output/{project}/RandomForest/{date_str}/Test{test_id}/Validation/rf_final_score.{test_id}.{date_str}.csv"
+        results = "Output/{project}/RandomForest/{date_str}/Test{test_id}/Optimised/rf_final_score.optimised.{test_id}.{date_str}.csv"
     log:
-        file =  "Output/log/rf_validation_r2.{project}.{test_id}.{date_str}.log.txt"
+        file =  "Output/log/rf_validation_r2.optimised.{project}.{test_id}.{date_str}.log.txt"
     threads:1
     resources:
         mem_mb=1000
@@ -27,7 +24,7 @@ rule run_rf_validation_r2:
             --TestPlan {input.test_plan} \
             --HyperParams {input.h_params} \
             --TestID {params.test_id} \
-            --SeqSelectionResults {input.fs_bs_results} \
+            --SeqSelectionResults {input.features} \
             --TrainTestPartitioning {params.trn_test} \
             --DateStr {params.date_str} \
             --OutputDir {params.out_dir} \

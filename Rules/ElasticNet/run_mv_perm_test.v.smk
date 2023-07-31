@@ -1,4 +1,4 @@
-rule run_mv_perm_test:
+rule run_mv_perm_test_v:
     input:
         script = "Scripts/Multivariate/mv_perm_test.py",
         test_plan = EN_TEST_PLAN,
@@ -6,13 +6,13 @@ rule run_mv_perm_test:
     params:
         date_str = "{date_str}",
         test_id = "{test_id}",
-        sigma_cut_off = 0,
-        out_dir = "Output/{project}/ElasticNet/{date_str}/Test{test_id}"
+        sigma_cut_off = 2,
+        out_dir = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Validation"
     output:
-        results = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/mv_feature_importance_perm_values.{test_id}.{date_str}.csv",
-        plot = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/mv_feature_importance_box_plot.{test_id}.{date_str}.png"
+        results = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Validation/mv_feature_importance_perm_values_2sig.{test_id}.{date_str}.csv",
+        plot = "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Validation/mv_feature_importance_box_plot_2sig.{test_id}.{date_str}.png"
     log:         
-        file = "Output/log/mv_perm_test.{project}.{test_id}.{date_str}.log.txt"
+        file = "Output/log/mv_perm_test.v.{project}.{test_id}.{date_str}.log.txt"
     threads: 1
     resources:
         mem_mb=1000

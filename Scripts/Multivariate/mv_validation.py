@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import time, uuid, os, sys, argparse
+import time, uuid, os, sys, argparse, distutils
 
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -48,6 +48,14 @@ def parse_arguments():
     )
 
     required.add_argument(
+        "-ttp",
+        "--TrainTestPartitioning",
+        help="Train test patitioning as bool.",
+        required=True,
+        type=str,
+    )
+
+    required.add_argument(
         "-d",
         "--DateStr",
         help="Date ID, DDMMYYYY",
@@ -64,6 +72,49 @@ def parse_arguments():
     )
     
     return vars(parser.parse_args())
+
+def get_output_filename(source_filename:str,test_id:int, 
+    date_str:str, output_dir:str, 
+    partition_training_dataset:bool
+):
+    optimised = ""
+    if "optimised" in source_filename:
+        optimised = "optimised."
+
+    output_filename = ""
+    if partition_training_dataset:
+        output_filename = os.path.join(
+            output_dir, 
+            'mv_train_test_score.{optimised}{test_id}.{date_str}.csv'.format(
+                optimised = optimised,
+                test_id = test_id, 
+                date_str=date_str
+            )
+        )
+    else: 
+        output_filename = os.path.join(
+            output_dir, 
+            'mv_final_score.{optimised}{test_id}.{date_str}.csv'.format(
+                optimised = optimised,
+                test_id = test_id, 
+                date_str=date_str
+            )
+        )
+    
+    return output_filename
+
+def load_phenos_subset(source_filename:str, fs_bs_filter):
+
+    if 'fs_bs_candidate_features' in source_filename:
+        phenos_subset = pd.read_csv(source_filename, index_col=0)
+        indeces = phenos_subset.values[:,1:3].sum(axis=1)
+        indeces = np.where(indeces >= fs_bs_filter)
+        phenos_subset = list(phenos_subset.iloc[indeces]['label'].values)
+    else:
+        phenos_subset = pd.read_csv(source_filename, index_col=0)
+        phenos_subset = list(phenos_subset['optimised_rep'].values)
+        
+    return phenos_subset
 
 def get_partitioned_data(phenos_subset:str, 
         partition_training_dataset:bool, 
@@ -232,12 +283,12 @@ def main():
     source_filename = args["Input"]
     test_plan_filename = args["TestPlan"]
     date_str = args["DateStr"]
+    partition_training_dataset = distutils.util.strtobool(args["TrainTestPartitioning"])
 
     #Declare Config Params
     dependent_var = 'f_kir_score' #'kir_count'
     scoring = 'neg_mean_absolute_error'
     fs_bs_filter = 2
-    partition_training_dataset = True
 
     random_state = 42*42
     n_splits = 4
@@ -251,14 +302,21 @@ def main():
     normalise = bool(test_plan_atts['normalise'].values[0])
     standardise = bool(test_plan_atts['standardise'].values[0])
 
-    output_filename = os.path.join(output_dir, "mv_final_score.{1}.{0}.csv".format(date_str, test_id))
-
+    # Format Output Filename
+    output_filename = get_output_filename(
+        source_filename=source_filename,
+        test_id=test_id, 
+        date_str=date_str, 
+        output_dir=output_dir, 
+        partition_training_dataset=partition_training_dataset
+    )
+        
     # Pull Data from DB
     #Read in Subset of Immunophenotypes
-    phenos_subset = pd.read_csv(source_filename, index_col=0)
-    indeces = phenos_subset.values[:,1:3].sum(axis=1)
-    indeces = np.where(indeces >= fs_bs_filter)
-    phenos_subset = list(phenos_subset.iloc[indeces]['label'].values)
+    phenos_subset = load_phenos_subset(
+        source_filename=source_filename,
+        fs_bs_filter=fs_bs_filter
+    )
 
     # Evaluate Models
     validation_approaches = ['tt', 'vv', 'tv']
@@ -290,7 +348,7 @@ def main():
             standardise = standardise, 
             normalise = normalise
         )
-        key = 'neg_mae' + '_' + validation_approaches[idx]
+        key = 'avg_neg_mae' + '_' + validation_approaches[idx]
         output[key] = neg_mae
 
     # Export Results

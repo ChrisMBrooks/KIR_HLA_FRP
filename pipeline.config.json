@@ -1,7 +1,7 @@
 {
     "project":"MY_PROJECT",
     "date_str":"DDMMYYYY",
-    "test_ids":[11],
+    "test_ids":[10, 11],
     "en_test_plan_details":"Input/en_test_plan_attributes_DDMMYYYY.csv",
     "rf_test_plan_details":"Input/rf_test_plan_attributes_DDMMYYYY.csv",
     "rf_selected_h_params_r1":"Input/rf_selected_h_params_r1_DDMMYYYY.csv",

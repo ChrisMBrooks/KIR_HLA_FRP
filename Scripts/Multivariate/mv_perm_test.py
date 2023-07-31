@@ -40,8 +40,8 @@ def parse_arguments():
     )
 
     required.add_argument(
-        "-i",
-        "--Input",
+        "-ssr",
+        "--SeqSelectionResults",
         help="FS-BS Results as .csv",
         required=True,
         type=str,
@@ -56,6 +56,14 @@ def parse_arguments():
     )
 
     required.add_argument(
+        "-sco",
+        "--SigmaCutOff",
+        help="Sigma Cut Off as int.",
+        required=True,
+        type=int,
+    )
+
+    required.add_argument(
         "-o",
         "--OutputDir",
         help="Output Directory",
@@ -64,6 +72,63 @@ def parse_arguments():
     )
     
     return vars(parser.parse_args())
+
+def format_output_filename(source_filename, sigma_cut_off, test_id, date_str, output_dir):
+    optimised = ""
+    if 'optimised' in source_filename:
+        optimised = "optimised."
+        
+    results_filename = ""
+    plot_filename = ""
+    if sigma_cut_off == 0.0:
+        results_filename = os.path.join(
+            output_dir, 
+            'mv_feature_importance_perm_values.{optimised}{test_id}.{date_str}.csv'.format(
+                optimised=optimised,
+                test_id=test_id, 
+                date_str=date_str
+            )
+        )
+        plot_filename = os.path.join(
+            output_dir,
+            "mv_feature_importance_box_plot.{optimised}{test_id}.{date_str}.png".format(
+                optimised=optimised,
+                test_id=test_id, 
+                date_str=date_str
+            )
+        )
+    elif sigma_cut_off == 2:
+        results_filename = os.path.join(
+            output_dir,
+            'mv_feature_importance_perm_values_2sig.{optimised}{test_id}.{date_str}.csv'.format(
+                optimised=optimised,
+                test_id=test_id, 
+                date_str=date_str
+            )
+        )
+        plot_filename = os.path.join(
+            output_dir,
+            "mv_feature_importance_box_plot_2sig.{optimised}{test_id}.{date_str}.png".format(
+                optimised=optimised,
+                test_id=test_id, 
+                date_str=date_str
+            )
+        )
+    print(results_filename, plot_filename)
+    return results_filename, plot_filename
+
+def load_phenos_subset(source_filename:str, fs_bs_filter):
+
+    if 'fs_bs_candidate_features' in source_filename:
+        phenos_subset = pd.read_csv(source_filename, index_col=0)
+        indeces = phenos_subset.values[:,1:3].sum(axis=1)
+        indeces = np.where(indeces >= fs_bs_filter)
+        phenos_subset = list(phenos_subset.iloc[indeces]['label'].values)
+    else:
+        phenos_subset = pd.read_csv(source_filename, index_col=0)
+        phenos_subset = list(phenos_subset['optimised_rep'].values)
+    
+    return phenos_subset
 
 def preprocess_for_validation(
         phenos_t:pd.DataFrame, scores_t:pd.DataFrame, 
@@ -85,15 +150,13 @@ def preprocess_for_validation(
     return phenos_t, scores_t, phenos_v, scores_v
 
 def main():
-    start_time = time.time()
-    run_id = str(uuid.uuid4().hex)
-
     args = parse_arguments()
     test_id = args["TestID"]
     output_dir = args["OutputDir"]
-    source_filename = args["Input"]
+    source_filename = args["SeqSelectionResults"]
     test_plan_filename = args["TestPlan"]
     date_str = args["DateStr"]
+    sigma_cut_off = args["SigmaCutOff"]
 
     #Set Configuration Params
     dependent_var = 'f_kir_score' #'kir_count'
@@ -113,15 +176,11 @@ def main():
     strategy = test_plan_atts['strategy'].values[0]
     normalise = bool(test_plan_atts['normalise'].values[0])
     standardise = bool(test_plan_atts['standardise'].values[0])
-
-    results_filename = os.path.join(output_dir, "mv_feature_importance_perm_values.{1}.{0}.csv".format(date_str, test_id))
-    plot_filename = os.path.join(output_dir, "mv_feature_import_box_plot.{1}.{0}.png".format(date_str, test_id))
+        
+    results_filename, plot_filename = format_output_filename(source_filename, sigma_cut_off, test_id, date_str, output_dir)
 
     #Retrieve Data
-    phenos_subset = pd.read_csv(source_filename, index_col=0)
-    indeces = phenos_subset.values[:,1:3].sum(axis=1)
-    indeces = np.where(indeces >= fs_bs_filter)
-    phenos_subset = list(phenos_subset.iloc[indeces]['label'].values)
+    phenos_subset = load_phenos_subset(source_filename=source_filename, fs_bs_filter=fs_bs_filter)
 
     scores_t = data_sci_mgr.data_mgr.features(fill_na=False, fill_na_value=None, partition='training')
     phenos_t = data_sci_mgr.data_mgr.outcomes(fill_na=False, fill_na_value=None, partition='training')

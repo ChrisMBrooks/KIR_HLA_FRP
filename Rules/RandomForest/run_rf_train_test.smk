@@ -1,4 +1,4 @@
-rule run_rf_validation_r2:
+rule run_rf_train_test_r2:
     input:
         script = "Scripts/RandomForest/run_rf_validation.py",
         test_plan = RF_TEST_PLAN,
@@ -10,13 +10,13 @@ rule run_rf_validation_r2:
     params:
         date_str = "{date_str}",
         test_id = "{test_id}",
-        trn_test = False,
-        out_dir = "Output/{project}/RandomForest/{date_str}/Test{test_id}/Validation",
+        trn_test = True,
+        out_dir = "Output/{project}/RandomForest/{date_str}/Test{test_id}",
         n_jobs = 1
     output:
-        results = "Output/{project}/RandomForest/{date_str}/Test{test_id}/Validation/rf_final_score.{test_id}.{date_str}.csv"
+        results = "Output/{project}/RandomForest/{date_str}/Test{test_id}/rf_train_test_score.{test_id}.{date_str}.csv"
     log:
-        file =  "Output/log/rf_validation_r2.{project}.{test_id}.{date_str}.log.txt"
+        file =  "Output/log/rf_train_test_r2.{project}.{test_id}.{date_str}.log.txt"
     threads:1
     resources:
         mem_mb=1000

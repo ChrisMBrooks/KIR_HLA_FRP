@@ -48,30 +48,84 @@ rule rf_complete:
             test_id=TEST_IDS,
             date_str=DATE_STR
         ),
-        validation_results = expand(
-            "Output/{project}/RandomForest/{date_str}/Test{test_id}/rf_final_score.{test_id}.{date_str}.csv",
+
+        train_test_results = expand(
+            "Output/{project}/RandomForest/{date_str}/Test{test_id}/rf_train_test_score.{test_id}.{date_str}.csv",
             project=PROJECT,
             test_id=TEST_IDS,
             date_str=DATE_STR
         ),
+
         plot_r1 = expand(
             "Output/{project}/RandomForest/{date_str}/Test{test_id}/rf_gs_results_r1_line_plot.min_samples_split.{test_id}.{date_str}.png",
             project=PROJECT,
             test_id=TEST_IDS,
             date_str=DATE_STR
         ),
+
         plot_r2 = expand(
             "Output/{project}/RandomForest/{date_str}/Test{test_id}/rf_gs_results_r2_line_plot.min_samples_split.{test_id}.{date_str}.png",
             project=PROJECT,
             test_id=TEST_IDS,
             date_str=DATE_STR
         ),
+
         perf_hist = expand(
             "Output/{project}/RandomForest/{date_str}/Test{test_id}/rf_model_performance_perm_hist.{test_id}.{date_str}.png",
             project=PROJECT,
             test_id=TEST_IDS,
             date_str=DATE_STR
+        ),
+
+        validation_results = expand(
+            "Output/{project}/RandomForest/{date_str}/Test{test_id}/Validation/rf_final_score.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        optimised_candidates = expand(
+            "Output/{project}/RandomForest/{date_str}/Test{test_id}/Optimised/optimised_model_candidates.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        optimised_trn_test_results = expand(
+            "Output/{project}/RandomForest/{date_str}/Test{test_id}/Optimised/rf_train_test_score.optimised.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        univar_scores_v = expand(
+            "Output/{project}/RandomForest/{date_str}/Test{test_id}/Validation/univar_final_scores.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        perf_hist_v = expand(
+            "Output/{project}/RandomForest/{date_str}/Test{test_id}/Validation/rf_model_performance_perm_hist.{test_id}.{date_str}.png",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        univar_scores_opt = expand(
+            "Output/{project}/RandomForest/{date_str}/Test{test_id}/Optimised/univar_final_scores.optimised.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        perf_hist_opt = expand(
+            "Output/{project}/RandomForest/{date_str}/Test{test_id}/Optimised/rf_model_performance_perm_hist.optimised.{test_id}.{date_str}.png",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
         )
+
     output:
         file = "Output/{project}/RandomForest/{date_str}/rf_complete.{date_str}.txt"
     params:
@@ -91,8 +145,8 @@ rule en_complete:
             test_id=TEST_IDS
         ),
 
-        validation_results = expand(
-            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/mv_final_score.{test_id}.{date_str}.csv",
+        train_test_results = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/mv_train_test_score.{test_id}.{date_str}.csv",
             project=PROJECT,
             date_str=DATE_STR,
             test_id=TEST_IDS
@@ -117,7 +171,57 @@ rule en_complete:
             project=PROJECT,
             test_id=TEST_IDS,
             date_str=DATE_STR
+        ),
+
+        validation_results = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Validation/mv_final_score.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        optimised_candidates = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Optimised/mv_train_test_score.optimised.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        optimised_train_test_results = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Optimised/optimised_model_candidates.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        univar_scores_v = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Validation/univar_final_scores.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        perf_hist_v = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Validation/mv_model_performance_perm_hist.{test_id}.{date_str}.png",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        univar_scores_opt = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Optimised/univar_final_scores.optimised.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        perf_hist_opt = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/Optimised/mv_model_performance_perm_hist.optimised.{test_id}.{date_str}.png",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
         )
+
     output:
         file = "Output/{project}/ElasticNet/{date_str}/en_complete.{date_str}.txt"
     params:
@@ -137,11 +241,27 @@ include: "Rules/RandomForest/gen_rf_gs_results_r1_line_plot.smk"
 include: "Rules/RandomForest/gen_rf_gs_results_r2_line_plot.smk"
 include: "Rules/RandomForest/run_rf_r1_w_cv.smk"
 include: "Rules/RandomForest/run_rf_qc_fs_bs.smk"
-include: "Rules/RandomForest/run_rf_validation.smk"
 include: "Rules/RandomForest/run_rf_perm_test.smk"
 
+include: "Rules/RandomForest/run_rf_train_test.smk"
 include: "Rules/RandomForest/run_rf_perf_perm_test.smk"
 include: "Rules/RandomForest/gen_rf_perf_test_hist.smk"
+include: "Rules/RandomForest/get_rf_optimised_features.smk"
+
+include: "Rules/RandomForest/gen_rf_perf_test_hist.opt.smk"
+include: "Rules/RandomForest/run_rf_meff_calc.opt.smk"
+include: "Rules/RandomForest/run_rf_perf_perm_test.opt.smk"
+include: "Rules/RandomForest/run_rf_perm_test.opt.smk"
+include: "Rules/RandomForest/run_rf_univar_validation.opt.smk"
+include: "Rules/RandomForest/run_rf_validation.opt.smk"
+
+include: "Rules/RandomForest/run_rf_validation.smk"
+include: "Rules/RandomForest/run_rf_train_test.opt.smk"
+
+include: "Rules/RandomForest/run_rf_perm_test.v.smk"
+include: "Rules/RandomForest/run_rf_meff_calc.smk"
+include: "Rules/RandomForest/gen_rf_perf_test_hist.v.smk"
+include: "Rules/RandomForest/run_rf_univar_validation.v.smk"
 
 #ElasticNet Rules
 include: "Rules/ElasticNet/gen_en_gs_line_plots.smk"
@@ -150,8 +270,23 @@ include: "Rules/ElasticNet/run_en_gs.smk"
 include: "Rules/ElasticNet/run_en_gs_wo_cv.smk"
 include: "Rules/ElasticNet/run_mv_perm_test.smk"
 include: "Rules/ElasticNet/run_mv_qc_fs_bs.smk"
-include: "Rules/ElasticNet/run_mv_validation.smk"
 
+include: "Rules/ElasticNet/run_mv_train_test.smk"
 include: "Rules/ElasticNet/run_mv_perf_perm_test.smk"
 include: "Rules/ElasticNet/gen_mv_perf_test_hist.smk"
+include: "Rules/ElasticNet/get_mv_optimised_features.smk"
 
+include: "Rules/ElasticNet/gen_mv_perf_test_hist.opt.smk"
+include: "Rules/ElasticNet/run_mv_meff_calc.opt.smk"
+include: "Rules/ElasticNet/run_mv_perf_perm_test.opt.smk"
+include: "Rules/ElasticNet/run_mv_perm_test.opt.smk"
+include: "Rules/ElasticNet/run_mv_univar_validation.opt.smk"
+include: "Rules/ElasticNet/run_mv_validation.opt.smk"
+
+include: "Rules/ElasticNet/run_mv_validation.smk"
+include: "Rules/ElasticNet/run_mv_train_test.opt.smk"
+
+include: "Rules/ElasticNet/run_mv_perm_test.v.smk"
+include: "Rules/ElasticNet/run_mv_meff_calc.smk"
+include: "Rules/ElasticNet/gen_mv_perf_test_hist.v.smk"
+include: "Rules/ElasticNet/run_mv_univar_validation.v.smk"
