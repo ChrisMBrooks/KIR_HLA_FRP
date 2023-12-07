@@ -17,7 +17,7 @@ rule run_rf_gs_r2_wo_cv_parallel:
         result = "Output/{project}/RandomForest/{date_str}/Test{test_id}/ParallelisedData/rf_parallel_gs_results_r2_wo_cv.{start_index}.{step}.{test_id}.{date_str}.csv"
     threads:24
     resources:
-        mem_mb=6000
+        mem_mb=4000
     conda: "../../Envs/kir_hla_ml_env.yml"
     shell: 
         """

@@ -85,6 +85,8 @@ def format_output_filename(source_filename, test_id, date_str, output_dir):
     prefix = ''
     if 'rf_' in source_filename:
         prefix = 'rf'
+    elif 'enr2' in source_filename:
+        prefix = 'enr2'
     else:
         prefix = 'mv'
 

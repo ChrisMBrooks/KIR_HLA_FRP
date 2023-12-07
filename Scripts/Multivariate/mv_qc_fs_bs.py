@@ -118,9 +118,6 @@ def main():
     phenos_subset = pd.read_csv(source_filename, index_col=0)
     phenos_subset = list(phenos_subset.loc[np.count_nonzero(phenos_subset.values[:, 0:5], axis=1) >= 3].index)
 
-    if len(phenos_subset) < 3:
-        phenos_subset = list(pd.read_csv(source_filename, index_col=0).index)
-
     scores = data_sci_mgr.data_mgr.features(fill_na=False, fill_na_value=None, partition='training')
     phenos = data_sci_mgr.data_mgr.outcomes(fill_na=False, fill_na_value=None, partition='training')
     phenos = phenos[phenos_subset]

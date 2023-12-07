@@ -9,7 +9,7 @@ rule run_rf_gs_r1_parallel:
         start_index = "{start_index}",
         step = "{step}",
         out_dir = "Output/{project}/RandomForest/{date_str}/Test{test_id}/ParallelisedData",
-        num_jobs = 24
+        num_jobs = 23
     output:
         result = "Output/{project}/RandomForest/{date_str}/Test{test_id}/ParallelisedData/rf_parallel_gs_results_r1_w_cv.{start_index}.{step}.{test_id}.{date_str}.csv"
     threads: 24

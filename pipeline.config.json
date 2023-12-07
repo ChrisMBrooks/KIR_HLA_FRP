@@ -1,15 +1,15 @@
 {
-    "project":"MY_PROJECT",
-    "date_str":"DDMMYYYY",
-    "test_ids":[10, 11],
-    "en_test_plan_details":"Input/en_test_plan_attributes_DDMMYYYY.csv",
-    "rf_test_plan_details":"Input/rf_test_plan_attributes_DDMMYYYY.csv",
-    "rf_selected_h_params_r1":"Input/rf_selected_h_params_r1_DDMMYYYY.csv",
-    "rf_selected_h_params_r2":"Input/rf_selected_h_params_r2_DDMMYYYY.csv",
-    "fs_bs_inclusion_threshold":5,
+    "project":"KIR_HLA_TWINS_MM05",
+    "date_str":"22062023",
+    "test_ids":[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26],
+    "en_test_plan_details":"Input/en_test_plan_attributes_22062023.csv",
+    "rf_test_plan_details":"Input/rf_test_plan_attributes_22062023.csv",
+    "rf_selected_h_params_r1":"Input/rf_selected_h_params_r1_22062023.csv",
+    "rf_selected_h_params_r2":"Input/rf_selected_h_params_r2_22062023.csv",
+    "fs_bs_inclusion_threshold":100,
     "gs_index_min":0,
-    "gs_index_max": 3,
+    "gs_index_max": 379,
     "gs_index_step":1000,
-    "perf_perm_iter_count": 3,
-    "perf_perm_iter_step":3
+    "perf_perm_iter_count":10,
+    "perf_perm_iter_step": 1000
 }

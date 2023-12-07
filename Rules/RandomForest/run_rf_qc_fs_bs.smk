@@ -11,7 +11,7 @@ rule run_rf_qc_fs_bs:
         f_selection = 1,
         b_selection = 1,
         out_dir = "Output/{project}/RandomForest/{date_str}/Test{test_id}",
-        n_jobs = 16
+        n_jobs = 63
     output:
         results = "Output/{{project}}/RandomForest/{{date_str}}/Test{{test_id}}/rf_seq_selection_candidates.fs_bs.{thresh}.{{test_id}}.{{date_str}}.csv".format(
             thresh=FS_BS_INCLUSION_THRESHOLD
@@ -22,9 +22,9 @@ rule run_rf_qc_fs_bs:
     log:
         file = "Output/log/run_rf_qc_fs_bs.{project}.{test_id}.{date_str}.log.txt",
     conda: "../../Envs/kir_hla_ml_env.yml"
-    threads: 16
+    threads: 64
     resources:
-        mem_mb=3000
+        mem_mb=12000
     shell: 
         """
             python {input.script} \

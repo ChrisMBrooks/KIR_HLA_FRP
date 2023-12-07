@@ -220,6 +220,11 @@ rule en_complete:
             project=PROJECT,
             test_id=TEST_IDS,
             date_str=DATE_STR
+        ),
+        
+        enr2_complete = "Output/{project}/ElasticNet/{date_str}/enr2_complete.{date_str}.txt".format(
+            project = PROJECT, 
+            date_str = DATE_STR
         )
 
     output:
@@ -230,6 +235,94 @@ rule en_complete:
     shell:
         """
             echo en_complete! > Output/{params.project}/ElasticNet/{params.date_str}/en_complete.{params.date_str}.txt
+        """
+rule enr2_complete:
+    input:
+        perm_results = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/ElasticNetR2/enr2_feature_importance_perm_values.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        train_test_results = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/ElasticNetR2/enr2_train_test_score.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        plot_r2 = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/ElasticNetR2/enr2_gs_results_line_plot.alpha.{test_id}.{date_str}.png",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        perf_hist = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/ElasticNetR2/enr2_model_performance_perm_hist.{test_id}.{date_str}.png",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        validation_results = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/ElasticNetR2/Validation/enr2_final_score.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        optimised_candidates = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/ElasticNetR2/Optimised/optimised_model_candidates.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        optimised_trn_test_results = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/ElasticNetR2/Optimised/enr2_train_test_score.optimised.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        univar_scores_v = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/ElasticNetR2/Validation/univar_final_scores.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        perf_hist_v = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/ElasticNetR2/Validation/enr2_model_performance_perm_hist.{test_id}.{date_str}.png",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        univar_scores_opt = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/ElasticNetR2/Optimised/univar_final_scores.optimised.{test_id}.{date_str}.csv",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        ),
+
+        perf_hist_opt = expand(
+            "Output/{project}/ElasticNet/{date_str}/Test{test_id}/ElasticNetR2/Optimised/enr2_model_performance_perm_hist.optimised.{test_id}.{date_str}.png",
+            project=PROJECT,
+            test_id=TEST_IDS,
+            date_str=DATE_STR
+        )
+        
+    output:
+        file = "Output/{project}/ElasticNet/{date_str}/enr2_complete.{date_str}.txt"
+    params:
+        project = "{project}",
+        date_str = "{date_str}"
+    shell:
+        """
+            echo enr2_complete! > Output/{params.project}/ElasticNet/{params.date_str}/enr2_complete.{params.date_str}.txt
         """
 #Random Forest Rules
 include: "Rules/RandomForest/get_rf_h_params_combinations.smk"
@@ -290,3 +383,26 @@ include: "Rules/ElasticNet/run_mv_perm_test.v.smk"
 include: "Rules/ElasticNet/run_mv_meff_calc.smk"
 include: "Rules/ElasticNet/gen_mv_perf_test_hist.v.smk"
 include: "Rules/ElasticNet/run_mv_univar_validation.v.smk"
+
+#ElasticNetR2 Rules
+include: "Rules/ElasticNetR2/gen_enr2_gs_line_plots.smk"
+include: "Rules/ElasticNetR2/gen_enr2_perf_test_hist.opt.smk"
+include: "Rules/ElasticNetR2/gen_enr2_perf_test_hist.smk"
+include: "Rules/ElasticNetR2/gen_enr2_perf_test_hist.v.smk"
+include: "Rules/ElasticNetR2/get_enr2_optimised_features.smk"
+include: "Rules/ElasticNetR2/run_enr2_gs_wo_cv.smk"
+include: "Rules/ElasticNetR2/run_enr2_gs.smk"
+include: "Rules/ElasticNetR2/run_enr2_meff_calc.opt.smk"
+include: "Rules/ElasticNetR2/run_enr2_meff_calc.smk"
+include: "Rules/ElasticNetR2/run_enr2_perf_perm_test.opt.smk"
+include: "Rules/ElasticNetR2/run_enr2_perf_perm_test.smk"
+include: "Rules/ElasticNetR2/run_enr2_perm_test.opt.smk"
+include: "Rules/ElasticNetR2/run_enr2_perm_test.smk"
+include: "Rules/ElasticNetR2/run_enr2_perm_test.v.smk"
+include: "Rules/ElasticNetR2/run_enr2_qc_fs_bs.smk"
+include: "Rules/ElasticNetR2/run_enr2_train_test.opt.smk"
+include: "Rules/ElasticNetR2/run_enr2_train_test.smk"
+include: "Rules/ElasticNetR2/run_enr2_univar_validation.opt.smk"
+include: "Rules/ElasticNetR2/run_enr2_univar_validation.v.smk"
+include: "Rules/ElasticNetR2/run_enr2_validation.opt.smk"
+include: "Rules/ElasticNetR2/run_enr2_validation.smk"
